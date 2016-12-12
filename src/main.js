@@ -6,7 +6,7 @@ import Intrudaction from './components/Intrudaction.vue'
 import Favorite from './components/Favorite.vue'
 import Author from './components/Author.vue'
 import Aboutme from './components/Aboutme.vue'
-
+require('jquery')
 
 
 Vue.use(VueRouter)
