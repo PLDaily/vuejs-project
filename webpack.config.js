@@ -17,8 +17,8 @@ module.exports = {
             { test: /\.css$/, exclude: /node_modules/, loader: 'style-loader!css-loader'},
             { test: /\.vue$/, exclude: /node_modules/, loader: 'vue'},
             {
-                test: /\.(png|jpg)$/,
-                loader: 'url-loader?limit=8192'
+                test: /\.(png|jpg|gif)$/,
+                loader: 'url-loader?limit=102400'
             },
         ]
     },

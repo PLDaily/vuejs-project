@@ -6,13 +6,16 @@ import Intrudaction from './components/Intrudaction.vue'
 import Favorite from './components/Favorite.vue'
 import Author from './components/Author.vue'
 import Aboutme from './components/Aboutme.vue'
+import App from './components/App.vue'
 require('jquery')
 
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
 
-const router = new VueRouter()
+const router = new VueRouter({
+  	saveScrollPosition: true
+})
 
 //链接使用v-link.例: v-link="'/author'"
 var Home = Vue.extend({
@@ -29,12 +32,6 @@ var Home = Vue.extend({
 		'favorite': Favorite,
 		"aboutme": Aboutme
 	}
-});
-
-var App = Vue.extend({
-	template: '<div id="main">\
-					<router-view></router-view>\
-				</div>'
 });
 
 router.map({
