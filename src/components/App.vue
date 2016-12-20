@@ -25,7 +25,7 @@ legend {
 img {
 	display: block; 
 }	
-#main {
+#content-wrapper {
 	position: relative;
 	margin: 0 auto;
 	width: 1070px;
@@ -101,10 +101,10 @@ img {
 	float: left;
 	margin: 0;
 	height: 20px;
-	padding: 6px 0 0 28px;
+	padding: 2px 0 0 28px;
 	border: 0;
 	width: 180px;
-	height: 20px;
+	height: 24px;
 	color: #333;
 	background: url('../img/search-bg.gif') no-repeat;
 	}
@@ -112,7 +112,6 @@ img {
 /* Attribute selector */
 #header form input[type="image"] {
 	float: left;
-	background: url('../img/search-go.gif') no-repeat;
 	}	
 
 /* Used when the "watermark" is in place (removed for user entry) */	
@@ -120,7 +119,17 @@ img {
 	color: #64644d;
 	}
 
+#main {
+	float: left;
+	margin: 36px 10px 40px 0;
+	width: 710px;
+	}
 
+#secondary {
+	float: left;
+	margin-top: 36px;
+	width: 350px;
+	}
 
 .clearfix:after {
   content: ".";
@@ -135,7 +144,7 @@ img {
 		
 </style>
 <template>
-<div id="main">
+<div id="content-wrapper">
 	<div id="header" class="clearfix">
 		<ul class="clearfix">
 			<li><a v-link="'in_theaters'">正在热映</a></li>
@@ -155,17 +164,29 @@ img {
 				<legend></legend>
 				<label for="search-input">Search</label>
 				<input type="text" id="search-input" name="search" value="" title="Search">
-				<input type="image" name="">
+				<input type="image" name="" src="img/search-go.gif">
 			</fieldset>
 		</form>
 			
 	</div>
 
-	<div id="main-content">
+	<div id="main">
 		<router-view></router-view>
-	</div>
+	</div> <!-- end #main -->
+
+	<div id="secondary">
+		<myself></myself>
+	</div>	<!-- end #secondary -->
 </div>
 </template>
 <script type="text/javascript">
+import Myself from './Myself.vue'
 
+export default {
+    components: { 'myself': Myself },
+    data () {
+		return {
+		}
+    }
+}
 </script>

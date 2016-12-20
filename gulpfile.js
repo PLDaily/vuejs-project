@@ -10,7 +10,7 @@ var clean = require('gulp-clean');
 var uglify = require('gulp-uglify');
 var md5 = require('gulp-md5-plus');
 
-gulp.task('webpack',['build.index'], function() {
+gulp.task('webpack',['build.img'], function() {
   return gulp.src('./src/main.js')
     .pipe(webpack(require('./webpack.config.js')))
     .pipe(gulp.dest('./dist/js'))
@@ -37,6 +37,11 @@ gulp.task('webserver', ['build.index'], function() {
   });
 });
 
+gulp.task('build.img', ['build.index'], function() {
+  return gulp.src('./src/img/**')
+  .pipe(gulp.dest('./dist/img'));
+})
+
 gulp.task('build.index', ['clean'], function(){
   return gulp.src('./index.html')
     .pipe(gulp.dest('./dist'));
@@ -48,7 +53,7 @@ gulp.task('clean', function () {
 });
 
 //发布
-gulp.task('default', ['clean', 'webpack', 'build.index', 'script', 'webserver']);
+gulp.task('default', ['clean', 'webpack', 'build.index', 'build.img', 'script', 'webserver']);
 
 //测试
-gulp.task('dev', ['clean', 'webpack', 'build.index', 'watch', 'webserver']);
+gulp.task('dev', ['clean', 'webpack', 'build.index', 'build.img', 'watch', 'webserver']);

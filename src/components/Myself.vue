@@ -23,7 +23,6 @@ export default {
 			dataType: 'jsonp',
 			success: function(results){
 				if(results && results.meta && results.meta.status == 200){
-					console.log(results);
 					_this.data = results.data;
 				}else{
 					console.log('加载失败');

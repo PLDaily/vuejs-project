@@ -2,12 +2,15 @@ import Vue from 'vue'
 
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
-import Intrudaction from './components/Intrudaction.vue'
-import Favorite from './components/Favorite.vue'
-import Author from './components/Author.vue'
-import Aboutme from './components/Aboutme.vue'
+import Intheaters from './components/Intheaters.vue'
+import Comingsoon from './components/Comingsoon.vue'
+import Top250 from './components/Top250.vue'
+import Weekly from './components/Weekly.vue'
+import Usbox from './components/Usbox.vue'
+import Newmovies from './components/Newmovies.vue'
 import App from './components/App.vue'
 require('jquery')
+require('./css/reset.css')
 
 
 Vue.use(VueRouter)
@@ -18,33 +21,31 @@ const router = new VueRouter({
 })
 
 //链接使用v-link.例: v-link="'/author'"
-var Home = Vue.extend({
-	data() {
-		return {
-			data: data//全局定义的data写入到vue的data中使用
-		}
-	},
-	template: "<div v-for='item in data.list'>\
-					<component :is='item.module' :list='item'></component>\
-				</div>",
-	components: {
-		'intrudaction': Intrudaction,
-		'favorite': Favorite,
-		"aboutme": Aboutme
-	}
-});
+
 
 router.map({
-  	'/home': {
-    	component: Home  
+  	'/in_theaters': {
+    	component: Intheaters  
   	},
-  	'/author': {
-  		component: Author
+  	'/coming_soon': {
+    	component: Comingsoon  
+  	},
+  	'/top250': {
+    	component: Top250  
+  	},
+  	'/weekly': {
+    	component: Weekly  
+  	},
+  	'/us-box': {
+    	component: Usbox  
+  	},
+  	'/new-movies': {
+    	component: Newmovies  
   	}
 })
 
 router.redirect({
-  	'*': '/home'
+  	'*': '/in_theaters'
 })
 
 //表示所有路由下均有App组件，在App组件内扩展
