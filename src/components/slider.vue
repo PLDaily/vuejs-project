@@ -9,6 +9,9 @@ body,div,ul,li{
 .list-group li{
 	cursor:pointer;
 }
+.easySlider {
+    float: left;
+}
 .easySlider li{
 	float: left;
 }
@@ -34,8 +37,6 @@ body,div,ul,li{
 .slider-list img{
 	width:100%;
 	height:auto;
-    width: 710px;
-    height: 320px;
 }
 .slider-dots{
 	position: absolute;
@@ -69,21 +70,8 @@ body,div,ul,li{
         </ul>
 
         <ul class="slider-dots">
-
-            <li class="slider-dot active"></li>
-            
-            <li class="slider-dot"></li>
-            
-            <li class="slider-dot"></li>
-              
-            <li class="slider-dot"></li>
-            
-            <li class="slider-dot"></li>
-            
-            <li class="slider-dot"></li>
-            
-            <li class="slider-dot"></li>
-        
+            <li :class="index == 0 ? 'slider-dot active' : 'slider-dot'" v-for="index in defaults.imgCount">
+            </li>
         </ul>
 
         <span class="slider-derec slider-prev"></span>
@@ -98,23 +86,11 @@ body,div,ul,li{
   //import  easySlider from './js/easySlider.js'
   export default {
     //components: { 'sidebar': Sidebar },
-    props: ['data'],
+    props: ['data', 'defaults'],
     data() {
-        var defaults = {
-            width:710,//设置轮播的宽度
-            height:320,//设置轮播的高度
-            speed:400,//设置轮播的速度
-            delay:5000,//设置轮播的延迟时间
-            imgCount:7,//设置轮播的图片数
-            dots:true,//设置轮播的序号点
-            autoPlay:true//设置轮播是否自动播放
-        },
-        count = 0,//轮播计数器
+        var count = 0,//轮播计数器
         timer = null;//轮播计时器
-
         return {
-            defaults: defaults
-            ,
             count: count,//轮播计数器
             timer: timer//轮播计时器
         }
@@ -270,7 +246,6 @@ body,div,ul,li{
         if(!this.timer) {
             this.init();
         }
-        console.log(this.data);
     }
 }
 </script>

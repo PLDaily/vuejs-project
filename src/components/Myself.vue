@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 <div id="div1">作者</div><a v-link="'/home'">回到首页</a>
 <img :src="data.avatar_url" />
 <div><span>博客</span>{{data.blog}}</div>
@@ -31,4 +31,4 @@ export default {
 		});
 	}
 }
-</script>
+</script> -->
