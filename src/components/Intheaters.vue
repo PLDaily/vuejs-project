@@ -24,7 +24,9 @@
     overflow: hidden;
 }
 .movies_img {
+    padding: 5px 0 5px 5px;
     width: 65px;
+    box-sizing: border-box;
     height: 100px;
     float: left;
 }
@@ -84,7 +86,8 @@
             </span>
         </div>
          <div class="movies_actor">
-            <span v-for="actor in movies.casts">
+            <span>主演: </span>
+            <span v-for="actor in movies.casts" v-if="this.$index < 2">
                 {{actor.name}}
             </span>
         </div>

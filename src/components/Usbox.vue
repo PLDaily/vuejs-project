@@ -1,22 +1,16 @@
+<style type="text/css">
+.page404 {
+    font-weight: 700;
+    font-size: 100px;
+    height: 400px;
+    width: 100%;
+    text-align: center;
+    line-height: 400px;
+}
+</style>
 <template>
-<slider :data="data"></slider>
-</template>
-<script>
-  import Slider from './Slider.vue'
+<div class="page404">
+    <p>404</p>
+</div>
 
-  export default {
-    components: { 'slider': Slider },
-    data() {
-    	var data;
-    	return {
-    		data: data
-    	}
-    },
-    ready() {
-    	var _this = this;
-    	this.$http.jsonp('http://api.douban.com/v2/movie/us_box',{'start':0, 'count': 7}).then(function(data) {
-        	_this.$set('data', data.data);
-        });
-    }
-  }
-</script>
+</template>
