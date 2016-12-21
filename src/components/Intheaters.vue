@@ -1,4 +1,7 @@
 <style type="text/css">
+.in_theaters_content {
+    overflow: hidden;
+}
 .in_theaters_title {
     width: 300px;
     height: 76px;
@@ -21,6 +24,11 @@
     border: 1px solid;
     margin-top: 10px;
     cursor: pointer;
+    overflow: hidden;
+}
+.in_theaters_movies_link {
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
 .movies_img {
@@ -67,34 +75,58 @@
     line-height: 15px;
     float: left;
 }
+.loadMore {
+    cursor: pointer;
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    line-height: 40px;
+    font-size: 20px;
+    margin-top: 10px;
+    border-radius: 4px;
+    border: 1px solid;
+    text-align: center;
+}
+.loadMore:hover {
+    background-color: #DBD8CB;
+}
 </style>
 <template>
-<slider :data="slider_data" :defaults="slider_defaults"></slider>
-<div class="in_theaters_title">
-    <p>正在热映</p>
-</div>
-<div class="in_theaters_movies" v-for="movies in data.subjects" :style="this.$index % 2 == 0 || this.$index < 3 ? 'margin-left: 100px;' : ''">
-    <img :src="movies.images.small" class="movies_img">
-    <div class="movies_introduction">
-        <div class="movies_name">
-            <a href="#">{{movies.title}}</a>
-        </div>
-        <div class="movies_director">
-            <span>导演: </span>
-            <span v-for="director in movies.directors">
-                {{director.name}}
-            </span>
-        </div>
-         <div class="movies_actor">
-            <span>主演: </span>
-            <span v-for="actor in movies.casts" v-if="this.$index < 2">
-                {{actor.name}}
-            </span>
-        </div>
-        <div class="movies_rating">
-            <span>评分: </span><span>{{movies.rating.average}}</span>
-        </div>
+<div class="in_theaters_content">
+    <slider :data="slider_data" :defaults="slider_defaults"></slider>
+
+    <div class="in_theaters_title">
+        <p>正在热映</p>
     </div>
+    <div class="in_theaters_movies" v-for="movies in data" :style="this.$index % 2 == 0 || this.$index < 3 ? 'margin-left: 105px;' : ''">
+        <a class="in_theaters_movies_link" v-link="{name: 'movies', params: {moviesId: movies.id}}">
+            <img :src="movies.images.small" class="movies_img">
+            <div class="movies_introduction">
+                <div class="movies_name">
+                    <span>{{movies.title}}</span>
+                </div>
+                <div class="movies_director">
+                    <span>导演: </span>
+                    <span v-for="director in movies.directors">
+                        {{director.name}}
+                    </span>
+                </div>
+                 <div class="movies_actor">
+                    <span>主演: </span>
+                    <span v-for="actor in movies.casts | limitBy 2">
+                        {{actor.name}}
+                    </span>
+                </div>
+                <div class="movies_rating">
+                    <span>评分: </span><span>{{movies.rating.average | toFixOne}}</span>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="loadMore" @click="loadMore()">
+    <p>加载更多</p>
 </div>
 </template>
 <script>
@@ -103,8 +135,9 @@
   export default {
     components: { 'slider': Slider },
     data() {
-    	var slider_data;
+        var slider_data;
         var data;
+        var count;
         var slider_defaults = {
             width:300,//设置轮播的宽度
             height:420,//设置轮播的高度
@@ -114,21 +147,46 @@
             dots:true,//设置轮播的序号点
             autoPlay:true//设置轮播是否自动播放
         };
-    	return {
-    		slider_data: slider_data,
+        return {
+            count: count,
+            slider_data: slider_data,
             slider_defaults: slider_defaults,
             data: data
-    	}
+        }
+    },
+    filters: {
+        toFixOne(value) {
+            return value.toFixed(1);
+        }
+    },
+    methods: {
+        loadMore() {
+            var _this = this;
+            $('.loadMore').html('正在加载中...');
+            this.$http.jsonp('http://api.douban.com/v2/movie/in_theaters',{'start':this.count, 'count': this.count + 10}).then(function(data) {
+                var subjects = data.data.subjects;
+                _this.$set('data', _this.data.concat(subjects));
+                if(subjects.length < 10) {
+                    $('.loadMore').hide();
+                }else {
+                    $('.loadMore').html('加载更多');
+                }
+            });
+            this.count = this.count + 10;
+        }
     },
     ready() {
-    	var _this = this;
-    	this.$http.jsonp('http://api.douban.com/v2/movie/in_theaters',{'start':0, 'count': 5}).then(function(data) {
-        	_this.$set('slider_data', data.data);
+        var _this = this;
+        this.count = 11;
+        this.$http.jsonp('http://api.douban.com/v2/movie/in_theaters',{'start':0, 'count': 5}).then(function(data) {
+            _this.$set('slider_data', data.data);
         });
         this.$http.jsonp('http://api.douban.com/v2/movie/in_theaters',{'start':0, 'count': 11}).then(function(data) {
-            _this.$set('data', data.data);
+            _this.$set('data', data.data.subjects);
         });
+        console.log(this.$router);
 
     }
   }
+
 </script>

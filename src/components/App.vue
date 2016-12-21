@@ -11,10 +11,6 @@ a:link, a:active, a:visited {
 	color: #af670a;
 	text-decoration: none;
 }
-
-a:hover {
-	color: #227115;
-}
 	
 a img {
 	border: none;

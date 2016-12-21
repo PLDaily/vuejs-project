@@ -9,6 +9,7 @@ import Weekly from './components/Weekly.vue'
 import Usbox from './components/Usbox.vue'
 import Newmovies from './components/Newmovies.vue'
 import App from './components/App.vue'
+import Introduction from './components/Introduction.vue'
 require('jquery')
 require('./css/reset.css')
 
@@ -41,7 +42,11 @@ router.map({
   	},
   	'/new-movies': {
     	component: Newmovies  
-  	}
+  	},
+    '/movies/:moviesId': {
+      name: 'movies',
+      component: Introduction
+    }
 })
 
 router.redirect({
