@@ -61,7 +61,7 @@ body,div,ul,li{
             
         <ul class="slider-lists">
 
-            <li class="slider-list" v-for="movies in data.subjects">
+            <li class="slider-list" v-for="movies in data">
                 <a v-link="{name: '/', params: {moviesId: movies.id}}">
                     <img :src="movies.images.large" :alt="movies.title">                    
                 </a>
@@ -224,7 +224,6 @@ body,div,ul,li{
             {
                 _self.timer=setInterval(function(){
                     _self.next()
-                    console.log(11);
                 },_self.defaults.delay)
                 $(".easySlider").mouseover(function()
                 {
@@ -234,7 +233,6 @@ body,div,ul,li{
                 {
                     _self.timer=setInterval(function(){
                     _self.next();
-                    console.log(22);
                 },_self.defaults.delay)
                 });
                 _self.timerArr.push(_self.timer);
@@ -250,8 +248,6 @@ body,div,ul,li{
     ready() {
         this.timer = null;
         this.init();
-        console.log(this.defaults.delay);
-        console.log(this.timerArr.length);
     }
 }
 </script>

@@ -93,7 +93,7 @@
 </style>
 <template>
 <div class="in_theaters_content">
-    <slider :data="sliderdata" :defaults="slider_defaults"></slider>
+    <slider :data="slider_data" :defaults="slider_defaults"></slider>
 
     <div class="in_theaters_title">
         <p>{{title}}</p>
@@ -133,13 +133,15 @@
   import Slider from './Slider.vue'
 
   export default {
-    props: ['sliderdata', 'data', 'title'],
+    props: ['url', 'title'],
     components: { 'slider': Slider },
     data() {
-        var count;
-        var isshowloadmore = true;
-        var sliderdata;
-        var loadMoreText = '加载更多';
+        var count;//加载的影片数
+        var data;//影片数据
+        var isshowloadmore = true;//是否显示更多加载
+        var slider_data;//轮转图影片数据
+        var loadMoreText = '加载更多';//底部显示内容
+        var isSend = false;//防止多次点击提交
         var slider_defaults = {
             width:300,//设置轮播的宽度
             height:420,//设置轮播的高度
@@ -150,9 +152,10 @@
             autoPlay:true//设置轮播是否自动播放
         };
         return {
+            data: data,
             isshowloadmore: isshowloadmore,
             loadMoreText: loadMoreText,
-            sliderdata: sliderdata,
+            slider_data: slider_data,
             count: count,
             slider_defaults: slider_defaults
         }
@@ -163,16 +166,36 @@
         }
     },
     methods: {
-        loadMore(value) {
-            this.loadMoreText = '正在加载中...';
-            this.$dispatch('loadMore');
+        loadMore() {
+            if(!this.isSend) {
+                var _this = this;
+                this.loadMoreText = '正在加载中...';
+                this.isSend = true;
+                this.$http.jsonp('http://api.douban.com/v2/movie/' + this.url, {'start':this.count, 'count': 10}).then(function(data) {
+                    var subjects = data.data.subjects;
+                    _this.$set('data', _this.data.concat(subjects));
+                    if(subjects.length < 10) {
+                        _this.isshowloadmore = false;
+                    }else {
+                        _this.loadMoreText = '加载更多';
+                        _this.isshowloadmore = true;
+                        _this.isSend = false;
+                    }
+
+                });
+                this.count = this.count + 10;
+            }
         }
     },
-    events: {
-        loadMoreText(value) {
-            this.isshowloadmore = value;
-            this.loadMoreText = '加载更多';
-        }
+    ready() {
+        var _this = this;
+        this.count = 11;
+        this.$http.jsonp('http://api.douban.com/v2/movie/' + this.url,{'start':0, 'count': 5}).then(function(data) {
+            _this.$set('slider_data', data.data.subjects);
+        });
+        this.$http.jsonp('http://api.douban.com/v2/movie/' + this.url,{'start':5, 'count': 6}).then(function(data) {
+            _this.$set('data', _this.slider_data.concat(data.data.subjects));
+        });
     }
   }
 
