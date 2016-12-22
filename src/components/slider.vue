@@ -85,9 +85,11 @@ body,div,ul,li{
   export default {
     props: ['data', 'defaults'],
     data() {
+        var timerArr = [];
         var count = 0,//轮播计数器
         timer = null;//轮播计时器
         return {
+            timerArr: timerArr,
             count: count,//轮播计数器
             timer: timer//轮播计时器
         }
@@ -222,27 +224,34 @@ body,div,ul,li{
             {
                 _self.timer=setInterval(function(){
                     _self.next()
+                    console.log(11);
                 },_self.defaults.delay)
                 $(".easySlider").mouseover(function()
                 {
                     clearInterval(_self.timer);
-                })
+                });
                 $(".easySlider").mouseout(function()
                 {
                     _self.timer=setInterval(function(){
-                    _self.next()
+                    _self.next();
+                    console.log(22);
                 },_self.defaults.delay)
-                })
+                });
+                _self.timerArr.push(_self.timer);
             }
             else{
                 clearInterval(_self.timer);
             }
         }
     },
+    watch: {
+
+    },
     ready() {
-        if(!this.timer) {
-            this.init();
-        }
+        this.timer = null;
+        this.init();
+        console.log(this.defaults.delay);
+        console.log(this.timerArr.length);
     }
 }
 </script>

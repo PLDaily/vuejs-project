@@ -20,23 +20,24 @@
     },
     events: {
         loadMore() {
+            var isshowloadmore;
             var _this = this;
-            $('.loadMore').html('正在加载中...');
-            this.$http.jsonp('http://api.douban.com/v2/movie/in_theaters',{'start':this.count, 'count': this.count + 10}).then(function(data) {
+            this.$http.jsonp('http://api.douban.com/v2/movie/in_theaters',{'start':this.count, 'count': 10}).then(function(data) {
                 var subjects = data.data.subjects;
                 _this.$set('data', _this.data.concat(subjects));
                 if(subjects.length < 10) {
-                    $('.loadMore').hide();
+                    isshowloadmore = false;
                 }else {
-                    $('.loadMore').html('加载更多');
+                    isshowloadmore = true;
                 }
+                _this.$broadcast('loadMoreText', isshowloadmore);
             });
             this.count = this.count + 10;
         }
     },
     ready() {
         var _this = this;
-        this.count = 10;
+        this.count = 11;
         this.$http.jsonp('http://api.douban.com/v2/movie/in_theaters',{'start':0, 'count': 5}).then(function(data) {
             _this.$set('slider_data', data.data);
         });

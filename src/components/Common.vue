@@ -125,8 +125,8 @@
     </div>
 </div>
 
-<div class="loadMore" @click="loadMore()">
-    <p>加载更多</p>
+<div class="loadMore" @click="loadMore()" v-show="isshowloadmore">
+    <p>{{loadMoreText}}</p>
 </div>
 </template>
 <script>
@@ -137,7 +137,9 @@
     components: { 'slider': Slider },
     data() {
         var count;
+        var isshowloadmore = true;
         var sliderdata;
+        var loadMoreText = '加载更多';
         var slider_defaults = {
             width:300,//设置轮播的宽度
             height:420,//设置轮播的高度
@@ -148,6 +150,8 @@
             autoPlay:true//设置轮播是否自动播放
         };
         return {
+            isshowloadmore: isshowloadmore,
+            loadMoreText: loadMoreText,
             sliderdata: sliderdata,
             count: count,
             slider_defaults: slider_defaults
@@ -160,7 +164,14 @@
     },
     methods: {
         loadMore(value) {
-            this.$dispatch('loadMore', this);
+            this.loadMoreText = '正在加载中...';
+            this.$dispatch('loadMore');
+        }
+    },
+    events: {
+        loadMoreText(value) {
+            this.isshowloadmore = value;
+            this.loadMoreText = '加载更多';
         }
     }
   }
