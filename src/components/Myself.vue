@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 <img :src="data.avatar_url" />
 <div><span>博客</span>{{data.blog}}</div>
 <div><span>邮箱</span>{{data.email}}</div>
@@ -30,4 +30,4 @@ export default {
 		});
 	}
 }
-</script>
+</script> -->

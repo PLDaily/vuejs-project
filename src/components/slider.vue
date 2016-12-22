@@ -62,7 +62,7 @@ body,div,ul,li{
         <ul class="slider-lists">
 
             <li class="slider-list" v-for="movies in data.subjects">
-                <a href="#">
+                <a v-link="{name: '/', params: {moviesId: movies.id}}">
                     <img :src="movies.images.large" :alt="movies.title">                    
                 </a>
             </li>
@@ -82,10 +82,7 @@ body,div,ul,li{
 
 </template>
 <script>
-  //import Sidebar from './Sidebar.vue'
-  //import  easySlider from './js/easySlider.js'
   export default {
-    //components: { 'sidebar': Sidebar },
     props: ['data', 'defaults'],
     data() {
         var count = 0,//轮播计数器

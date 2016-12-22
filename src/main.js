@@ -43,8 +43,8 @@ router.map({
   	'/new-movies': {
     	component: Newmovies  
   	},
-    '/movies/:moviesId': {
-      name: 'movies',
+    '/:moviesId': {
+      name: '/',
       component: Introduction
     }
 })
