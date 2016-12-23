@@ -1,253 +1,184 @@
 <style type="text/css">
-body,div,ul,li{
-	margin:0;
-	padding:0;
-}
-.slider-lists{
-	list-style: none;
-}
-.list-group li{
-	cursor:pointer;
-}
-.easySlider {
+.slider_box {
+    overflow: hidden;
+    position: relative;
+    text-align: center;
     float: left;
 }
-.easySlider li{
-	float: left;
+.slider_list {
+    float: left;
 }
-.easySlider{
-	position: relative;
-	overflow: hidden;
+.slider_list_content {
+    width: 100%;
+    height: 100%;
 }
-.slider-derec{
-	position: absolute;
-	width:50px;
-	height:50px;
-	cursor: pointer;
+.slider_dots{
+    position: relative;
+    top: -25px;
+    overflow: hidden;
+    list-style:none;
+    display: inline-block;
 }
-.slider-derec.slider-prev{
-	background: url(../img/left.png);
+.slider_dots .slider_dot{
+    width:10px;
+    height:10px;
+    border-radius:10px;
+    border:1px solid #fff;
+    margin:0 5px;
+    cursor: pointer;
+    float: left;
 }
-.slider-derec.slider-next{
-	background: url(../img/right.png);
+.slider_dots .active{
+    background-color: #ffffff;
 }
-.slider-lists{
-	position: absolute;
+
+.slider_derec{
+    position: absolute;
+    width:50px;
+    height:50px;
+    cursor: pointer;
 }
-.slider-list img{
-	width:100%;
-	height:auto;
+.slider_prev{
+    background: url(../img/left.png);
 }
-.slider-dots{
-	position: absolute;
-	bottom:0;
-	margin-bottom:20px;
-	list-style:none;
-}
-.slider-dots .slider-dot{
-	width:10px;
-	height:10px;
-	border-radius:10px;
-	border:1px solid #fff;
-	margin:0 5px;
-	cursor: pointer;
-}
-.slider-dots .slider-dot.active{
-	background-color: #ffffff;
+.slider_next{
+    background: url(../img/right.png);
 }
 </style>
 <template>
-    <div class="easySlider">
-            
-        <ul class="slider-lists">
+<div class="slider_box" :style="sliderBoxStyle" @mouseover="mouseover" @mouseout="mouseout">
+    <ul class="slider_lists" :style="sliderListsStyle">
+        <li  v-for="movies in pages" class="slider_list" :style="sliderListStyle">
+            <a v-link="{name: '/', params: {moviesId: movies.id}}">
+                <img :src="movies.images.large" :alt="movies.title" :style="sliderImgStyle" class="slider_list_content" />
+            </a>
+        </li>
+    </ul>
+    <ul class="slider_dots" v-show="sliderinit.dots">
+        <li v-for="list in pages" :class="this.$index == currentPage ? 'slider_dot active' : 'slider_dot'" @click="turnTo(this.$index)"></li>
+    </ul>
 
-            <li class="slider-list" v-for="movies in data">
-                <a v-link="{name: '/', params: {moviesId: movies.id}}">
-                    <img :src="movies.images.large" :alt="movies.title">                    
-                </a>
-            </li>
+    <span class="slider_derec slider_prev" :style="sliderPrevStyle" v-show="sliderinit.button" @click="sliderPrev"></span>
+    <span class="slider_derec slider_next" :style="sliderNextStyle" v-show="sliderinit.button" @click="sliderNext"></span>
 
-        </ul>
-
-        <ul class="slider-dots">
-            <li :class="index == 0 ? 'slider-dot active' : 'slider-dot'" v-for="index in defaults.imgCount">
-            </li>
-        </ul>
-
-        <span class="slider-derec slider-prev"></span>
-        
-        <span class="slider-derec slider-next"></span>
-    
-    </div>
-
+</div>
 </template>
 <script>
-  export default {
-    props: ['data', 'defaults'],
+export default {
+    props: ['sliderinit', 'pages'],
     data() {
-        var timerArr = [];
-        var count = 0,//轮播计数器
-        timer = null;//轮播计时器
+        var timer = null;
+        var sliderBoxStyle = {
+            width: this.sliderinit.width + 'px',
+            height: this.sliderinit.height + 'px'
+        };
+
+        var sliderListsStyle = {
+            width: this.sliderinit.width*this.sliderinit.imgCount + 'px',
+            height: this.sliderinit.height + 'px'
+        };
+
+        var sliderListStyle = {
+            width: this.sliderinit.width + 'px',
+            height: this.sliderinit.height + 'px'
+        };
+
+        var sliderPrevStyle = {
+            top: (this.sliderinit.height - 50) / 2 + 'px',
+            left: 20 + 'px'
+        };
+
+        var sliderNextStyle = {
+            top: (this.sliderinit.height - 50) / 2 + 'px',
+            right: 20 + 'px'
+        };
+
+        var sliderImgStyle = {
+            transform: "translateX(0)"
+        };
+
+        var cunrrentPosition = 0;
+
+        var currentPage = this.sliderinit.currentPage;
         return {
-            timerArr: timerArr,
-            count: count,//轮播计数器
-            timer: timer//轮播计时器
+            sliderBoxStyle: sliderBoxStyle,
+            sliderListStyle: sliderListStyle,
+            sliderListsStyle: sliderListsStyle,
+            sliderPrevStyle: sliderPrevStyle,
+            sliderNextStyle: sliderNextStyle,
+            currentPage: currentPage,
+            cunrrentPosition: cunrrentPosition,
+            sliderImgStyle: sliderImgStyle,
+            timer: timer
         }
     },
     methods: {
-        init() {
-            this.clacSize();
-            this.doEvent();
-            this.dots();
-            this.autoPlay();
+        setTimer() {
+            var _this = this;
+            this.timer = setInterval(function() {
+                _this.next();
+            }, this.sliderinit.changeTime)
         },
-        clacSize() {
-            var _self = this;
-            $('.easySlider').css({
-                'width':this.defaults.width,
-                'height':this.defaults.height
-            })
-            $('.slider-list').width(this.defaults.width);
-
-            $('.slider-lists').width(this.defaults.width*this.defaults.imgCount);
-
-            $('.slider-derec').css({
-                'top':(this.defaults.height-$('.slider-derec').height())/2
-            })
-
-            $('.slider-prev').css({
-                'left':20
-            })
-
-            $('.slider-next').css({
-                'right':20
-            })
-
-            $('.slider-dots').css({
-                'left':(this.defaults.width-$('.slider-dots').width())/2
-            })
-
-            $('.slider-dot').on('click',function(){
-                _self.active($(this))
-            })
+        prev() {
+            this.currentCompute(false);
+            this.styleCompute();
         },
-        //触发轮播事件
-        doEvent(){
-            var _self = this;
-            $('.slider-next').click(function(){
-                _self.next();
-            })
-
-             $('.slider-prev').click(function(){
-                _self.prev();
-            })
+        next() {
+            this.currentCompute(true);
+            this.styleCompute();
         },
-        //下一页
-        next(){
-            if(!$(".slider-lists").is(":animated"))
-            {
-                if(this.count>=this.defaults.imgCount-1){
-                    $('.slider-lists').animate({
-                    'left':0
-                    },this.defaults.speed);
-                    this.count=0;
-                    this.active($('.slider-dot').eq(0))
+        currentCompute(next) {//计算当前位置及当前节点
+            var maxPage = this.sliderinit.imgCount - 1;
+            var sliderWidth = this.sliderinit.width;
+            if(next) {
+                if(++this.currentPage > maxPage) {
+                    this.currentPage = 0;   
                 }
-                else{
-                    $('.slider-lists').animate({
-                    'left':-this.defaults.width*(this.count+1)
-                    },this.defaults.speed)
-                    this.count++
-                    this.active($('.slider-dot').eq(this.count))
+                this.cunrrentPosition -= sliderWidth;
+            }else {
+                if(--this.currentPage < 0) {
+                    this.currentPage = maxPage; 
                 }
-
+                this.cunrrentPosition += sliderWidth;
+            }
+            if(this.cunrrentPosition < -sliderWidth*maxPage) {
+                this.cunrrentPosition = 0;          
+            }
+            if(this.cunrrentPosition > 0) {
+                this.cunrrentPosition = -sliderWidth*maxPage;
             }
         },
-        //上一页
-        prev(){
-            if(!$(".slider-lists").is(":animated")){
-                if(this.count<=0){
-                    $('.slider-lists').animate({
-                    'left':-this.defaults.width*(this.defaults.imgCount-1)
-                    },this.defaults.speed);
-                    this.count=this.defaults.imgCount-1;
-                    this.active($('.slider-dot').eq(this.count))
-                }
-                else{
-                    $('.slider-lists').animate({
-                    'left':-this.defaults.width*(this.count-1)
-                    },this.defaults.speed);
-                    this.count--;
-                    this.active($('.slider-dot').eq(this.count))
-                }
+        styleCompute() {//样式变化
+            var obj = {
+                "transform": `translateX(${this.cunrrentPosition}px)`,
+                "transition-duration": this.sliderinit.animateTime/1000 + 's'
             }
+            this.sliderImgStyle = Object.assign(this.sliderImgStyle, obj);
         },
-        //轮播序号点
-        dots(){
-            var _self = this;
-            if(_self.defaults.dots){
-                $('.slider-dots').show()
-                $('.slider-dot').each(function(index){
-                $(this).click(function(){
-                    if(index-1<0){
-                        $('.slider-lists').animate({
-                            'left':0
-                            },_self.defaults.speed);
-                    }
-                    else{
-                        _self.list(index-1);
-                        _self.count = index;
-                    }
-                })
-             })
-            }
-            else{
-                $('.slider-dots').hide()
-            }
-            
+        turnTo(num) {
+            this.currentPage = num;
+            this.cunrrentPosition = -this.sliderinit.width*num;
+            this.styleCompute();
         },
-        //添加激活状态
-        active(elements) {
-            elements.addClass('active').siblings().removeClass('active')
+        sliderPrev() {
+            this.prev();
         },
-        //序号点触发事件
-        list(num) {
-            var _self = this;
-            $('.slider-lists').animate({
-                    'left':-_self.defaults.width*(num+1)
-           },_self.defaults.speed)
+        sliderNext() {
+            this.next();
         },
-        //自动轮播事件
-        autoPlay() {
-            var _self = this;
-            if(_self.defaults.autoPlay)
-            {
-                _self.timer=setInterval(function(){
-                    _self.next()
-                },_self.defaults.delay)
-                $(".easySlider").mouseover(function()
-                {
-                    clearInterval(_self.timer);
-                });
-                $(".easySlider").mouseout(function()
-                {
-                    _self.timer=setInterval(function(){
-                    _self.next();
-                },_self.defaults.delay)
-                });
-                _self.timerArr.push(_self.timer);
-            }
-            else{
-                clearInterval(_self.timer);
+        mouseover() {
+            clearTimeout(this.timer);
+        },
+        mouseout() {
+            if(this.sliderinit.autoplay) {
+                this.setTimer();
             }
         }
     },
-    watch: {
-
-    },
     ready() {
-        this.timer = null;
-        this.init();
+        if(this.sliderinit.autoplay) {
+            this.setTimer();
+        }
     }
 }
 </script>

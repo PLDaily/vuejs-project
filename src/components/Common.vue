@@ -93,7 +93,8 @@
 </style>
 <template>
 <div class="in_theaters_content">
-    <slider :data="slider_data" :defaults="slider_defaults"></slider>
+    <slider :pages="slider_data" :sliderinit="sliderinit">
+    </slider>
 
     <div class="in_theaters_title">
         <p>{{title}}</p>
@@ -113,7 +114,7 @@
                 </div>
                  <div class="movies_actor">
                     <span>主演: </span>
-                    <span v-for="actor in movies.casts | limitBy 2">
+                    <span v-for="actor in movies.casts | limitBy limitNum" >
                         {{actor.name}}
                     </span>
                 </div>
@@ -142,14 +143,16 @@
         var slider_data;//轮转图影片数据
         var loadMoreText = '加载更多';//底部显示内容
         var isSend = false;//防止多次点击提交
-        var slider_defaults = {
-            width:300,//设置轮播的宽度
-            height:420,//设置轮播的高度
-            speed:400,//设置轮播的速度
-            delay:5000,//设置轮播的延迟时间
-            imgCount:5,//设置轮播的图片数
-            dots:true,//设置轮播的序号点
-            autoPlay:true//设置轮播是否自动播放
+        var sliderinit = {
+            width: 300,
+            height: 420,
+            imgCount: 5,
+            dots: true,//是否显示轮番点
+            button: true,//是否显示前进后退按钮
+            currentPage: 0,//起始页
+            changeTime: 5000,//时间间隔
+            animateTime: 1000,
+            autoplay:true//自动播放
         };
         return {
             data: data,
@@ -157,7 +160,8 @@
             loadMoreText: loadMoreText,
             slider_data: slider_data,
             count: count,
-            slider_defaults: slider_defaults
+            sliderinit: sliderinit,
+            limitNum: 2
         }
     },
     filters: {
@@ -173,7 +177,7 @@
                 this.isSend = true;
                 this.$http.jsonp('http://api.douban.com/v2/movie/' + this.url, {'start':this.count, 'count': 10}).then(function(data) {
                     var subjects = data.data.subjects;
-                    _this.$set('data', _this.data.concat(subjects));
+                    _this.$set('data', Array.prototype.concat(_this.data, subjects));
                     if(subjects.length < 10) {
                         _this.isshowloadmore = false;
                     }else {
@@ -181,7 +185,6 @@
                         _this.isshowloadmore = true;
                         _this.isSend = false;
                     }
-
                 });
                 this.count = this.count + 10;
             }
@@ -194,7 +197,7 @@
             _this.$set('slider_data', data.data.subjects);
         });
         this.$http.jsonp('http://api.douban.com/v2/movie/' + this.url,{'start':5, 'count': 6}).then(function(data) {
-            _this.$set('data', _this.slider_data.concat(data.data.subjects));
+            _this.$set('data', Array.prototype.concat(_this.slider_data, data.data.subjects));
         });
     }
   }
