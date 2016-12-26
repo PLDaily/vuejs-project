@@ -123,9 +123,9 @@ img {
 
 #secondary {
 	float: left;
-	margin-top: 36px;
+	margin-top: 150px;
 	width: 350px;
-	}
+}
 
 .clearfix:after {
   content: ".";
@@ -171,17 +171,23 @@ img {
 	</div> <!-- end #main -->
 
 	<div id="secondary">
-		<myself></myself>
+		<github :githubinit="githubinit"></github>
 	</div>	<!-- end #secondary -->
 </div>
 </template>
 <script type="text/javascript">
-import Myself from './Myself.vue'
+import Github from './Github.vue'
 
 export default {
-    components: { 'myself': Myself },
+    components: { 'github': Github },
     data () {
+    	var githubinit = {
+    		username: "PlDaily",
+    		width: 100,
+    		position: "right"
+    	};
 		return {
+			githubinit: githubinit
 		}
     }
 }
