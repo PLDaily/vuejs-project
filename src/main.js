@@ -10,6 +10,7 @@ import Usbox from './components/Usbox.vue'
 import Newmovies from './components/Newmovies.vue'
 import App from './components/App.vue'
 import Introduction from './components/Introduction.vue'
+import Search from './components/Search.vue'
 require('jquery')
 require('./css/reset.css')
 
@@ -46,6 +47,9 @@ router.map({
     '/:moviesId': {
       name: '/',
       component: Introduction
+    },
+    '/search': {
+      component: Search
     }
 })
 

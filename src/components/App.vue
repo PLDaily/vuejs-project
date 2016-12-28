@@ -79,20 +79,20 @@ img {
 	text-transform: uppercase;
 	}	
 
-#header form {
+#header .form {
 	float: right;
 	margin-right: 25px;
 	text-align: right;
 	width: 249px;
 	}
 
-#header form label {
+#header .form label {
 	position: absolute;
   	left: -9999px;
 	}
 
 /* Attribute selector */
-#header form input[type="text"] {
+#header .form input[type="text"] {
 	display: block;
 	float: left;
 	margin: 0;
@@ -106,12 +106,12 @@ img {
 	}
 
 /* Attribute selector */
-#header form input[type="image"] {
+#header .form input[type="image"] {
 	float: left;
 	}	
 
 /* Used when the "watermark" is in place (removed for user entry) */	
-#header form input.watermark { 
+#header .form input.watermark { 
 	color: #64644d;
 	}
 
@@ -155,14 +155,11 @@ img {
 		
 		<h2>Your Guide to the Eternal City</h2>
 		
-		<form action="#" method="get" accept-charset="utf-8">
-			<fieldset>
-				<legend></legend>
-				<label for="search-input">Search</label>
-				<input type="text" id="search-input" name="search" value="" title="Search">
-				<input type="image" name="" src="img/search-go.gif">
-			</fieldset>
-		</form>
+		<div class="form">
+			<label for="search-input">Search</label>
+			<input v-model="message" type="text" id="search-input" name="search" value="" title="Search">
+			<a v-link="'search'"><input type="image" name="" src="img/search-go.gif" @click="searchMovies"></a>
+		</div>
 			
 	</div>
 
@@ -189,6 +186,11 @@ export default {
 		return {
 			githubinit: githubinit
 		}
+    },
+    methods: {
+    	searchMovies() {
+    		this.$broadcast('searchMovies', this.message);
+    	}
     }
 }
 </script>

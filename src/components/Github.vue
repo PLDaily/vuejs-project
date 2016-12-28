@@ -45,7 +45,7 @@
     padding-top: 14px;
 }
 .github_head_center {
-    height: 165px;
+    height: 170px;
     text-align: center;
 }
 .github_head_center .github_head_img {
