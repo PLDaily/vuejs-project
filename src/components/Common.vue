@@ -114,7 +114,7 @@
                 </div>
                  <div class="movies_actor">
                     <span>主演: </span>
-                    <span v-for="actor in movies.casts | limitBy limitNum" >
+                    <span v-for="actor in movies.casts" v-if="this.$index < 2">
                         {{actor.name}}
                     </span>
                 </div>
@@ -147,12 +147,12 @@
             width: 300,
             height: 420,
             imgCount: 5,
-            dots: true,//是否显示轮番点
-            button: true,//是否显示前进后退按钮
-            currentPage: 0,//起始页
-            changeTime: 5000,//时间间隔
+            dots: true,
+            button: true,
+            currentPage: 0,
+            changeTime: 5000,
             animateTime: 1000,
-            autoplay:true//自动播放
+            autoplay:true
         };
         return {
             data: data,
@@ -160,13 +160,15 @@
             loadMoreText: loadMoreText,
             slider_data: slider_data,
             count: count,
-            sliderinit: sliderinit,
-            limitNum: 2
+            sliderinit: sliderinit
         }
     },
     filters: {
         toFixOne(value) {
-            return value.toFixed(1);
+            if(!isNaN(value)) {
+                return value.toFixed(1);
+            }
+            return value;
         }
     },
     methods: {
