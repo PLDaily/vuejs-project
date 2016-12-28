@@ -183,7 +183,7 @@ export default {
     data () {
     	var githubinit = {
     		username: "PlDaily",
-    		width: 100,
+    		width: 260,
     		position: "right"
     	};
 		return {

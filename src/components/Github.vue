@@ -1,12 +1,12 @@
 <style type="text/css">
 .github_main {
-    width: 260px;
     padding: 10px;
-    height: 500px;
 }
 .github_head {
     overflow: hidden;   
     border-bottom: 1px solid #eee;
+    padding: 0 10px;
+    box-sizing: border-box;
 }
 .github_head .github_head_img {
     width: 100px;
@@ -31,8 +31,6 @@
     float: left;
 }
 .github_head_left .github_head_content {
-    float: left;
-    width: 160px;
     font-size: 20px;
     padding-top: 14px;
 }
@@ -43,8 +41,7 @@
     float: right;
 }
 .github_head_right .github_head_content {
-    float: right;
-    width: 160px;
+    width: 100%;
     padding-top: 14px;
 }
 .github_head_center {
@@ -59,78 +56,86 @@
     padding-top: 10px;
 }
 .github_content {
-    padding-top: 20px;
-    padding-left: 20px;
+    padding: 20px;
+    text-align: center;
+    box-sizing: border-box;
+    line-height: 1.5;
+}
+.github_foot {
+    display: flex;
+    cursor: pointer;
+}
+.github_foot .followers {
+    flex: 1;
+    text-align: center;
+}
+.github_foot .repos {
+    flex: 1;
+    text-align: center;
+}
+.github_foot .following {
+    flex: 1;
+    text-align: center;
 }
 </style>
 <template>
 
-<div class="github_main">
+<div class="github_main" :style="github_main_style">
     <div :class="'github_head github_head_' + githubinit.position">
-        <img src="../img/feature-arch.jpg" class="github_head_img">
-        <div class="github_head_content">
-            <span>PLDaily</span>
-            <span>HeHe</span>
-        </div>
-    </div>
-    <div class="github_content">
-        <div>
-            <span>http://PLDaily.github.io</span>
-        </div>
-        <div>
-            <span>506189445@qq.com</span>
-        </div>
-    </div>
-</div>
-<!-- <div class="github_main">
-    <div class="github_head github_head_left">
         <img :src="data.avatar_url" class="github_head_img">
         <div class="github_head_content">
             <span>{{data.login}}</span>
             <span>{{data.name}}</span>
         </div>
-        
     </div>
     <div class="github_content">
-        <div>
-            <span>博客</span>
+        <div v-if="data.blog">
             <span>{{data.blog}}</span>
         </div>
-        <div>
-            <span>邮箱</span>
+        <div v-if="data.email">
             <span>{{data.email}}</span>
         </div>
-    </div>
-    <div class="githun_foot">
-        <div>
-            <span>{{data.followers}}</span>
-            <span>Followers</span>
+        <div v-if="data.company">
+            {{data.company}}
         </div>
-        <div>
-            <span>{{data.public_repos}}</span>
-            <span>Repos</span>
-        </div>
-        <div>
-            <span>{{data.following}}</span>
-            <span>Following</span>
+        <div v-if="data.location">
+            {{data.location}}
         </div>
     </div>
-</div> -->
+    <div class="github_foot">
+        <a :href="'https://github.com/' + data.login + '?tab=followers'" class="followers">
+            <div>{{data.followers}}</div>
+            <div>Followers</div>
+        </a>
+        <a :href="'https://github.com/' + data.login + '?tab=repositories'" class="repos">
+            <div>{{data.public_repos}}</div>
+            <div>Repos</div>
+        </a>
+        <a :href="'https://github.com/' + data.login + '?tab=following'" class="following">
+            <div>{{data.following}}</div>
+            <div>Following</div>
+        </a>
+    </div>
+</div>
 </template>
 <script>
 export default {
     props: ['githubinit'],
 	data() {
 		var data = null;
+        var github_main_style = {
+            width: this.githubinit.width + 'px'
+        }
 		return {
-			data: data
+			data: data,
+            github_main_style: github_main_style
 		}
 	},
 	ready() {
 		var _this = this;
-        /*this.$http.jsonp('https://api.github.com/users/' + this.githubinit.username).then(function(data) {
+        this.$http.jsonp('https://api.github.com/users/' + this.githubinit.username).then(function(data) {
             _this.$set('data', data.data.data);
-        });*/
+        });
 	}
 }
 </script>

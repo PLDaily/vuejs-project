@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
 <common  :url="url" :title="title"></common>
 </template>
 <script>
@@ -15,4 +15,4 @@
         }
     }
   }
-</script> -->
+</script>
