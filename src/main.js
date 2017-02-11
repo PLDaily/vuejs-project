@@ -11,7 +11,6 @@ import Newmovies from './components/Newmovies.vue'
 import App from './components/App.vue'
 import Introduction from './components/Introduction.vue'
 import Search from './components/Search.vue'
-require('jquery')
 require('./css/reset.css')
 
 
